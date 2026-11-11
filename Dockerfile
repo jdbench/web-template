@@ -29,7 +29,7 @@ RUN apk add --no-cache git=2.54.0-r0 \
 	&& git config --system --add safe.directory /workspace \
 	&& ln -s /build/node_modules /node_modules
 
-FROM alpine:3.22 AS lambda-package
+FROM alpine:3.24 AS lambda-package
 
 RUN apk add --no-cache zip=3.0-r13
 WORKDIR /package
