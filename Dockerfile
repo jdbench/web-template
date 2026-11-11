@@ -1,4 +1,4 @@
-FROM node:24-alpine AS frontend-dependencies
+FROM node:25-alpine AS frontend-dependencies
 
 WORKDIR /build
 COPY package.json package-lock.json ./
