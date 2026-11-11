@@ -1,0 +1,49 @@
+:root {
+	color-scheme: light;
+	--ink: #17211b;
+	--muted: #657068;
+	--line: #d9dfda;
+	--surface: #ffffff;
+	--canvas: #f2f5f1;
+	--accent: #d84a2f;
+	--accent-dark: #ad321d;
+	--green: #258053;
+	--amber: #ba7624;
+	--red: #b9382a;
+	font-family: "Manrope", sans-serif;
+	font-synthesis: none;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+	color: var(--ink);
+	background-color: var(--canvas);
+	background-image:
+		linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px);
+	background-size: 24px 24px;
+}
+
+button,
+input,
+textarea {
+	font: inherit;
+}
+button {
+	cursor: pointer;
+}
+main {
+	min-height: calc(100vh - 132px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		scroll-behavior: auto !important;
+		animation-duration: 0.01ms !important;
+	}
+}

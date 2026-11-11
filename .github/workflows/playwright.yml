@@ -1,0 +1,44 @@
+name: Playwright E2E
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: playwright-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run integration environment
+        run: docker compose -f compose.dev.yaml -f compose.e2e.yaml up --build --abort-on-container-exit --exit-code-from e2e e2e
+
+      - name: Capture integration logs
+        if: always()
+        run: docker compose -f compose.dev.yaml -f compose.e2e.yaml logs --no-color > integration.log
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.event.pull_request.number }}
+          path: |
+            playwright-report/
+            test-results/
+            integration.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop integration environment
+        if: always()
+        run: docker compose -f compose.dev.yaml -f compose.e2e.yaml down --volumes --remove-orphans

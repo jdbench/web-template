@@ -1,0 +1,41 @@
+{
+	"name": "relay-build",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "docker compose -f compose.dev.yaml up --build",
+		"build": "npm run check && npm run bundle && npm run build:handlers",
+		"bundle": "npm run bundle:js && npm run bundle:css",
+		"bundle:js": "esbuild frontend/index.ts --bundle --format=iife --target=es2022 --minify --legal-comments=none --outfile=dist/app.min.js",
+		"bundle:css": "esbuild frontend/index.css --bundle --minify --legal-comments=none --outfile=dist/app.min.css",
+		"build:handlers": "esbuild handlers/index.ts --bundle --platform=node --format=esm --target=node24 --legal-comments=none --outfile=dist/handlers/index.mjs",
+		"check": "npm run typecheck && npm run lint && npm run test && npm audit --audit-level=high",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "eslint frontend handlers scripts tests playwright.config.ts vitest.config.ts",
+		"prepare": "husky",
+		"test": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"typecheck": "tsc --noEmit",
+		"watch": "node scripts/dev.ts"
+	},
+	"devDependencies": {
+		"@playwright/test": "1.62.1",
+		"@types/node": "24.2.1",
+		"@vitest/coverage-v8": "4.1.10",
+		"esbuild": "0.25.9",
+		"eslint": "9.33.0",
+		"eslint-config-prettier": "10.1.8",
+		"husky": "9.1.7",
+		"jsdom": "30.0.1",
+		"lint-staged": "16.1.5",
+		"prettier": "3.6.2",
+		"typescript": "5.9.2",
+		"typescript-eslint": "8.39.0",
+		"vitest": "4.1.10"
+	},
+	"lint-staged": {
+		"*.{css,html,js,json,md,mjs,ts,yaml,yml}": "prettier --write",
+		"*.ts": "eslint --fix"
+	}
+}

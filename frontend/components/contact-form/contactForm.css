@@ -1,0 +1,95 @@
+.method {
+	padding: 5px 8px;
+	color: var(--green);
+	border: 1px solid #bad5c6;
+	border-radius: 4px;
+	background: #edf6f0;
+	font:
+		500 0.68rem "DM Mono",
+		monospace;
+}
+form {
+	padding-top: 24px;
+}
+.field-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+label {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 17px;
+	color: #3e4842;
+	font-size: 0.78rem;
+	font-weight: 600;
+}
+input,
+textarea {
+	width: 100%;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 12px 13px;
+	color: var(--ink);
+	background: #fbfcfb;
+	outline: none;
+}
+textarea {
+	resize: vertical;
+	min-height: 104px;
+}
+input:focus,
+textarea:focus {
+	border-color: var(--green);
+	box-shadow: 0 0 0 3px #e4f0e9;
+}
+.form-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+.form-result {
+	min-height: 20px;
+	margin: 0;
+	color: var(--muted);
+	font-size: 0.78rem;
+	overflow-wrap: anywhere;
+}
+.form-result[data-state="success"] {
+	color: var(--green);
+}
+.form-result[data-state="error"] {
+	color: var(--red);
+}
+.primary-button {
+	min-height: 42px;
+	padding: 0 17px;
+	border: 1px solid var(--accent);
+	border-radius: 4px;
+	color: white;
+	background: var(--accent);
+	font-weight: 700;
+}
+.primary-button:hover {
+	border-color: var(--accent-dark);
+	background: var(--accent-dark);
+}
+.primary-button:disabled {
+	cursor: wait;
+	opacity: 0.65;
+}
+
+@media (max-width: 760px) {
+	.field-row {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+	.form-actions {
+		align-items: stretch;
+		flex-direction: column;
+	}
+	.primary-button {
+		width: 100%;
+	}
+}

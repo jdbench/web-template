@@ -1,0 +1,36 @@
+<section class="panel" aria-labelledby="request-title">
+	<div class="panel-heading">
+		<div>
+			<p class="eyebrow">POST /contact</p>
+			<h2 id="request-title">Send a test request</h2>
+		</div>
+		<span class="method">POST</span>
+	</div>
+	<form data-contact-form>
+		<div class="field-row">
+			<label
+				>Name<input name="name" autocomplete="name" required placeholder="Ada Lovelace"
+			/></label>
+			<label
+				>Email<input
+					name="email"
+					type="email"
+					autocomplete="email"
+					required
+					placeholder="ada@example.com"
+			/></label>
+		</div>
+		<label
+			>Message<textarea
+				name="message"
+				rows="4"
+				required
+				placeholder="Test the server request flow."
+			></textarea>
+		</label>
+		<div class="form-actions">
+			<p class="form-result" role="status"></p>
+			<button class="primary-button" type="submit">Send request</button>
+		</div>
+	</form>
+</section>

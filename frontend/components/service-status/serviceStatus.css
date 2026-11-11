@@ -1,0 +1,62 @@
+.metric-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	margin: 38px 0 20px;
+	border: 1px solid var(--line);
+	background: var(--surface);
+}
+.metric {
+	min-width: 0;
+	padding: 24px;
+}
+.metric + .metric {
+	border-left: 1px solid var(--line);
+}
+.metric-label,
+.metric small {
+	display: block;
+	color: var(--muted);
+}
+.metric-label {
+	margin-bottom: 20px;
+	font:
+		500 0.72rem "DM Mono",
+		monospace;
+	text-transform: uppercase;
+}
+.metric strong {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	margin-bottom: 5px;
+	font-size: 1.05rem;
+}
+.metric small {
+	font-size: 0.78rem;
+}
+.status-dot {
+	width: 8px;
+	height: 8px;
+	flex: 0 0 auto;
+	border-radius: 50%;
+	background: var(--amber);
+	box-shadow: 0 0 0 3px #f5e7d5;
+}
+.status-dot.online {
+	background: var(--green);
+	box-shadow: 0 0 0 3px #dcece3;
+}
+.status-dot.offline {
+	background: var(--red);
+	box-shadow: 0 0 0 3px #f2deda;
+}
+
+@media (max-width: 760px) {
+	.metric-grid {
+		grid-template-columns: 1fr;
+	}
+	.metric + .metric {
+		border-top: 1px solid var(--line);
+		border-left: 0;
+	}
+}

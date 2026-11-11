@@ -1,0 +1,16 @@
+vulnerabilities:
+  - id: CVE-2026-40467
+    statement: Fixed gawk package is not yet available from the AWS Lambda Node.js 24 base repositories.
+    expired_at: 2026-09-09
+  - id: CVE-2026-40468
+    statement: Fixed gawk package is not yet available from the AWS Lambda Node.js 24 base repositories.
+    expired_at: 2026-09-09
+  - id: CVE-2026-40553
+    statement: Fixed gawk package is not yet available from the AWS Lambda Node.js 24 base repositories.
+    expired_at: 2026-09-09
+  - id: CVE-2026-16118
+    statement: Fixed glib2 package is not yet available from the AWS Lambda Node.js 24 base repositories.
+    expired_at: 2026-09-09
+  - id: CVE-2026-44605
+    statement: Fixed rpm packages are not yet available from the AWS Lambda Node.js 24 base repositories.
+    expired_at: 2026-09-09

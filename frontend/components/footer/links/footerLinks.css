@@ -1,0 +1,11 @@
+.footer-links {
+	display: flex;
+	gap: 18px;
+}
+.footer-links a {
+	color: var(--muted);
+	text-decoration: none;
+}
+.footer-links a:hover {
+	color: var(--ink);
+}

@@ -1,0 +1,21 @@
+services:
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.62.1-noble
+    working_dir: /workspace
+    command: ["/bin/sh", "-lc", "npm ci --ignore-scripts && npm run test:e2e"]
+    depends_on:
+      frontend:
+        condition: service_started
+    environment:
+      CI: "true"
+      PLAYWRIGHT_BASE_URL: http://frontend
+    volumes:
+      - .:/workspace
+      - e2e-node-modules:/workspace/node_modules
+
+networks:
+  default:
+    name: web-template-network
+
+volumes:
+  e2e-node-modules:

@@ -1,0 +1,26 @@
+<aside class="panel architecture" aria-labelledby="architecture-title">
+	<div class="panel-heading">
+		<div>
+			<p class="eyebrow">Deployment</p>
+			<h2 id="architecture-title">Request path</h2>
+		</div>
+	</div>
+	<ol class="request-path">
+		<li>
+			<span>01</span>
+			<div><strong>Browser</strong><small>Same-origin requests</small></div>
+		</li>
+		<li>
+			<span>02</span>
+			<div><strong>Web gateway</strong><small>Custom domain or local proxy</small></div>
+		</li>
+		<li>
+			<span>03</span>
+			<div><strong>Lambda server</strong><small>HTML, assets, and API</small></div>
+		</li>
+	</ol>
+	<div class="endpoint">
+		<span>Security boundary</span>
+		<code>Same-origin /auth/* proxy</code>
+	</div>
+</aside>

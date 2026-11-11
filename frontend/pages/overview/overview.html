@@ -1,0 +1,22 @@
+<section class="workspace" aria-labelledby="workspace-title">
+	<div class="workspace-heading">
+		<div>
+			<p class="eyebrow">Workspace / Overview</p>
+			<h1 id="workspace-title">System overview</h1>
+		</div>
+		<button
+			class="icon-button"
+			type="button"
+			title="Refresh service status"
+			aria-label="Refresh service status"
+		>
+			<svg aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M20 6v5h-5M4 18v-5h5M18.5 9a7 7 0 0 0-12-2L4 11m16 2-2.5 4a7 7 0 0 1-12-2" />
+			</svg>
+		</button>
+	</div>
+
+	{{SERVICE_STATUS}} {{AUTH_PANEL}}
+
+	<div class="content-grid">{{CONTACT_FORM}} {{ARCHITECTURE}}</div>
+</section>

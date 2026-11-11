@@ -1,0 +1,93 @@
+<dialog class="auth-modal" data-auth-dialog aria-labelledby="account-title">
+	<section class="auth-panel" id="account">
+		<button
+			class="modal-close"
+			type="button"
+			data-auth-close
+			aria-label="Close authentication dialog"
+		>
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<div class="panel-heading">
+			<div>
+				<p class="eyebrow">Account</p>
+				<h2 id="account-title">Authentication</h2>
+			</div>
+			<div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+				<button
+					class="auth-tab active"
+					id="auth-login-tab"
+					type="button"
+					role="tab"
+					data-auth-mode="login"
+					aria-controls="auth-login-panel"
+					aria-selected="true"
+					tabindex="0"
+				>
+					Sign in
+				</button>
+				<button
+					class="auth-tab"
+					id="auth-register-tab"
+					type="button"
+					role="tab"
+					data-auth-mode="register"
+					aria-controls="auth-register-panel"
+					aria-selected="false"
+					tabindex="-1"
+				>
+					Register
+				</button>
+			</div>
+		</div>
+		<div class="auth-forms">
+			<form
+				id="auth-login-panel"
+				data-auth-form="login"
+				role="tabpanel"
+				aria-labelledby="auth-login-tab"
+			>
+				<label
+					>Email<input name="email" type="email" autocomplete="email" required autofocus
+				/></label>
+				<label
+					>Password<input name="password" type="password" autocomplete="current-password" required
+				/></label>
+				<button class="primary-button" type="submit">Sign in</button>
+			</form>
+			<form
+				id="auth-register-panel"
+				data-auth-form="register"
+				role="tabpanel"
+				aria-labelledby="auth-register-tab"
+				hidden
+			>
+				<label
+					>Name<input name="name" autocomplete="name" minlength="2" maxlength="80" required
+				/></label>
+				<label>Email<input name="email" type="email" autocomplete="email" required /></label>
+				<label
+					>Password<input
+						name="password"
+						type="password"
+						autocomplete="new-password"
+						minlength="12"
+						maxlength="128"
+						required
+				/></label>
+				<button class="primary-button" type="submit">Create account</button>
+			</form>
+		</div>
+		<div class="auth-user" hidden>
+			<div><strong data-auth-name></strong><small data-auth-email></small></div>
+			<div class="auth-user-actions">
+				<button class="secondary-button" type="button" data-avatar-change>Change image</button>
+				<button class="secondary-button" type="button" data-avatar-remove hidden>
+					Remove image
+				</button>
+				<button class="secondary-button" type="button" data-auth-logout>Sign out</button>
+			</div>
+		</div>
+		<p class="auth-result" role="status"></p>
+	</section>
+</dialog>

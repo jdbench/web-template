@@ -1,0 +1,41 @@
+.header-sign-in {
+	min-height: 38px;
+	padding: 0 15px;
+	border: 1px solid var(--ink);
+	border-radius: 4px;
+	color: white;
+	background: var(--ink);
+	font-size: 0.76rem;
+	font-weight: 700;
+}
+.header-sign-in:hover {
+	background: #2d3932;
+}
+.header-sign-in:focus-visible,
+.profile-avatar:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+.profile-avatar {
+	display: grid;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	place-items: center;
+	overflow: hidden;
+	border: 1px solid var(--line);
+	border-radius: 50%;
+	color: white;
+	background: var(--accent);
+	font:
+		700 0.84rem "DM Mono",
+		monospace;
+}
+.profile-avatar:hover {
+	border-color: var(--accent);
+}
+.profile-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}

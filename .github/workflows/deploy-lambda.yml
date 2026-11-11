@@ -1,0 +1,129 @@
+name: Deploy Lambda
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: production-lambda
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
+      AUTH_TABLE_NAME: ${{ vars.AUTH_TABLE_NAME }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      FUNCTION_NAME: ${{ vars.LAMBDA_FUNCTION_NAME }}
+      SESSION_DURATION_SECONDS: ${{ vars.SESSION_DURATION_SECONDS }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate deployment configuration
+        env:
+          AWS_DEPLOY_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          LAMBDA_EXECUTION_ROLE_ARN: ${{ secrets.LAMBDA_EXECUTION_ROLE_ARN }}
+        run: |
+          set -eu
+          for name in ALLOWED_ORIGIN AUTH_TABLE_NAME AWS_REGION FUNCTION_NAME SESSION_DURATION_SECONDS AWS_DEPLOY_ROLE_ARN LAMBDA_EXECUTION_ROLE_ARN; do
+            test -n "$(printenv "$name")" || { echo "Missing GitHub configuration: $name" >&2; exit 1; }
+          done
+
+      - name: Build Lambda ZIP
+        run: docker build --target lambda-artifact --output type=local,dest=dist/lambda .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Provision DynamoDB table
+        run: |
+          set -eu
+          if ! aws dynamodb describe-table --table-name "$AUTH_TABLE_NAME" >/dev/null 2>&1; then
+            aws dynamodb create-table \
+              --table-name "$AUTH_TABLE_NAME" \
+              --attribute-definitions AttributeName=pk,AttributeType=S \
+              --key-schema AttributeName=pk,KeyType=HASH \
+              --billing-mode PAY_PER_REQUEST >/dev/null
+            aws dynamodb wait table-exists --table-name "$AUTH_TABLE_NAME"
+            aws dynamodb update-time-to-live \
+              --table-name "$AUTH_TABLE_NAME" \
+              --time-to-live-specification Enabled=true,AttributeName=expiresAt >/dev/null
+          fi
+
+      - name: Deploy Lambda function
+        env:
+          LAMBDA_EXECUTION_ROLE_ARN: ${{ secrets.LAMBDA_EXECUTION_ROLE_ARN }}
+        run: |
+          set -eu
+          ENVIRONMENT=$(jq -cn \
+            --arg table "$AUTH_TABLE_NAME" \
+            --arg duration "$SESSION_DURATION_SECONDS" \
+            --arg origin "$ALLOWED_ORIGIN" \
+            '{Variables:{AUTH_TABLE_NAME:$table,SESSION_DURATION_SECONDS:$duration,ALLOWED_ORIGIN:$origin}}')
+
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name "$FUNCTION_NAME" \
+              --zip-file fileb://dist/lambda/lambda.zip >/dev/null
+            aws lambda wait function-updated --function-name "$FUNCTION_NAME"
+            aws lambda update-function-configuration \
+              --function-name "$FUNCTION_NAME" \
+              --runtime nodejs24.x \
+              --handler handlers/index.handler \
+              --role "$LAMBDA_EXECUTION_ROLE_ARN" \
+              --timeout 15 \
+              --environment "$ENVIRONMENT" >/dev/null
+          else
+            aws lambda create-function \
+              --function-name "$FUNCTION_NAME" \
+              --runtime nodejs24.x \
+              --handler handlers/index.handler \
+              --role "$LAMBDA_EXECUTION_ROLE_ARN" \
+              --timeout 15 \
+              --zip-file fileb://dist/lambda/lambda.zip \
+              --environment "$ENVIRONMENT" >/dev/null
+          fi
+          aws lambda wait function-active-v2 --function-name "$FUNCTION_NAME"
+
+      - name: Configure public Function URL
+        run: |
+          set -eu
+          if aws lambda get-function-url-config --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            aws lambda update-function-url-config \
+              --function-name "$FUNCTION_NAME" \
+              --auth-type NONE >/dev/null
+          else
+            aws lambda create-function-url-config \
+              --function-name "$FUNCTION_NAME" \
+              --auth-type NONE >/dev/null
+          fi
+
+          aws lambda remove-permission --function-name "$FUNCTION_NAME" --statement-id FunctionUrlPublicAccess >/dev/null 2>&1 || true
+          aws lambda remove-permission --function-name "$FUNCTION_NAME" --statement-id FunctionUrlPublicInvoke >/dev/null 2>&1 || true
+          aws lambda add-permission \
+            --function-name "$FUNCTION_NAME" \
+            --statement-id FunctionUrlPublicAccess \
+            --action lambda:InvokeFunctionUrl \
+            --principal "*" \
+            --function-url-auth-type NONE >/dev/null
+          aws lambda add-permission \
+            --function-name "$FUNCTION_NAME" \
+            --statement-id FunctionUrlPublicInvoke \
+            --action lambda:InvokeFunction \
+            --principal "*" \
+            --invoked-via-function-url >/dev/null
+
+          FUNCTION_URL=$(aws lambda get-function-url-config --function-name "$FUNCTION_NAME" --query FunctionUrl --output text)
+          echo "### Deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "Function URL: $FUNCTION_URL" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+docker build --target quality-tools -t relay-quality-tools .
+WORKSPACE=$(pwd -W 2>/dev/null || pwd)
+MSYS_NO_PATHCONV=1 docker run --rm -v "$WORKSPACE:/workspace" -w /workspace relay-quality-tools /build/node_modules/.bin/lint-staged

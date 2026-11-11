@@ -1,0 +1,31 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build test tools
+        run: docker build --target quality-tools --tag relay-quality-tools .
+
+      - name: Run unit tests
+        run: docker run --rm --volume "$PWD:/workspace" --workdir /workspace relay-quality-tools npm run test
+
+      - name: Upload coverage report
+        if: always() && hashFiles('coverage/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage-${{ github.event.pull_request.number }}
+          path: coverage/
+          retention-days: 14

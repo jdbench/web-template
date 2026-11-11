@@ -1,0 +1,12 @@
+.git
+.github
+.gitignore
+coverage
+dist
+LICENSE
+node_modules
+playwright-report
+README.md
+test-results
+docker-compose*.yml
+docker-compose*.yaml
