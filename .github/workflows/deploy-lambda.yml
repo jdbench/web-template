@@ -25,7 +25,7 @@ jobs:
       SESSION_DURATION_SECONDS: ${{ vars.SESSION_DURATION_SECONDS }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate deployment configuration
         env:
