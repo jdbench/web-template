@@ -41,7 +41,7 @@ FROM scratch AS lambda-artifact
 
 COPY --from=lambda-package /lambda.zip /lambda.zip
 
-FROM public.ecr.aws/lambda/nodejs:24
+FROM public.ecr.aws/lambda/nodejs:26
 
 RUN dnf upgrade -y \
 	&& dnf clean all
